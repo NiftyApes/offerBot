@@ -1,9 +1,0 @@
-node_modules
-.idea
-.env*
-!.env.dist
-*.log
-package-lock.json
-cache
-!cache/.gitkeep
-.DS_Store
