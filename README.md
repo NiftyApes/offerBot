@@ -20,11 +20,11 @@ Copy **.env.dist** and add missing values
 **PRIVATE_KEY**: Private key of wallet that should be used for creating offers
 
 ## Examples ERC721
-### Run without execution: Create floor Offer for the given contract on GOERLI with LTV of 0.001 ETH, APR 5%, valid for 2 days, and re-reates offer with delay of 1 minute.
+### Run without execution: Create floor Offer for the given contract on GOERLI with LTV of 0.1%, APR 5%, valid for 2 days, and re-reates offer with delay of 1 minute.
 ```shell
- node src/index.js --nftContractAddress 0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d --apr 5 --duration 2 --offerLimit 3  --ltv 0.001 --maxOfferValue 0.1 --chainId 0x5 --updateDelay 1 --dryRun
+ node src/index.js --nftContractAddress 0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d --apr 5 --duration 2 --offerLimit 3  --ltv 0.1 --maxOfferValue 0.1 --chainId 0x5 --updateDelay 1 --dryRun
 ```
-### Create floor Offer for the given contract on GOERLI with LTV of 0.001 ETH, APR 5%, valid for 2 days, and re-reates offer with delay of 1 minute.
+### Create floor Offer for the given contract on GOERLI with LTV of 0.1%, APR 5%, valid for 2 days, and re-reates offer with delay of 1 minute.
 ```shell
- node src/index.js --nftContractAddress 0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d --apr 5 --duration 2 --offerLimit 3  --ltv 0.001 --maxOfferValue 0.1 --chainId 0x5 --updateDelay 1
+ node src/index.js --nftContractAddress 0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d --apr 5 --duration 2 --offerLimit 3  --ltv 0.1 --maxOfferValue 0.1 --chainId 0x5 --updateDelay 1
 ```
