@@ -1,5 +1,6 @@
 import { ethers } from 'ethers';
 import { saveSignatureOfferInDb } from '../api/saveSignatureOfferInDb.js';
+import { OFFERS } from '../api/contractAddresses.js';
 
 
 const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
@@ -7,7 +8,7 @@ const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 export const createOffer = async function (chainId, signer, nftContractAddress, amount, aprInPercent, durationInDays, offerLimit, expirationInHours) {
   const address = signer.address;
 
-  const offersContractAddress = ethers.utils.getAddress('0x896A60e3f3457a3587F2ce30D812ffeDb7547EC7');
+  const offersContractAddress = ethers.utils.getAddress(OFFERS[chainId]);
 
   const SECONDS_IN_YEAR = 3.154e7
 
@@ -77,7 +78,8 @@ export const createOffer = async function (chainId, signer, nftContractAddress, 
   if (result.slice(-2) === '01') {
     result = result.slice(0, -2) + '1c';
   }
-  // console.log("here ----", offerAttempt.nftContractAddress);
+
+  console.log(new Date(), "requesting NiftyApes API to save the created offer...");
   await saveSignatureOfferInDb(
     chainId,
     offerAttempt.nftContractAddress,
@@ -94,4 +96,5 @@ export const createOffer = async function (chainId, signer, nftContractAddress, 
     ),
     result,
   );
+  console.log(new Date(), "save offer request completed.");
 };

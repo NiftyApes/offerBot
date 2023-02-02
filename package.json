@@ -7,9 +7,13 @@
     "type": "git",
     "url": "git+https://github.com:NiftyApes/offerBot.git"
   },
-  "main": "src/index.js",
+  "main": "index.js",
   "license": "MIT",
   "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
   "engines": {
     "node": "v16.17.*"
   },
