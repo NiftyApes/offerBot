@@ -50,14 +50,14 @@ Options:
 ```
 
 ### Example Runs: 
-Create one floor Offer for the given contract on GOERLI with LTV of 0.1%, APR 5%, valid for 2 days, and exipration of 10 minutes. Setting floorOfferLimit to 3 and maxOfferValue to 0.1 ETH
+Create one floor Offer for the given contract on `GOERLI` with `LTV` of 0.1%, `APR` 5%, `duration` of 2 days, and `exipration` of 10 minutes. Setting `floorOfferLimit` to 3 and `maxOfferValue` to 0.1 ETH
 ```shell
- node src/start-bot.js --nftContractAddress 0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d --chainId 0x5 --duration 2 --floorOfferLimit 3  --ltv 0.1 --maxOfferValue 0.1  --expiration 10 --apr 2
+ node src/start-bot.js --nftContractAddress 0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d --chainId 0x5 --duration 2 --floorOfferLimit 3  --ltv 0.1 --maxOfferValue 0.1  --expiration 10 --apr 5
 ```
 
-To run the bot indefinitely with expiration as delay, just add --runInLoop to the command.
+To run the bot indefinitely with expiration as delay, just add `--runInLoop` to the command.
 ```shell
- node src/start-bot.js --nftContractAddress 0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d --chainId 0x5 --duration 2 --floorOfferLimit 3  --ltv 0.1 --maxOfferValue 0.1  --expiration 10 --apr 2 --runInLoop
+ node src/start-bot.js --nftContractAddress 0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d --chainId 0x5 --duration 2 --floorOfferLimit 3  --ltv 0.1 --maxOfferValue 0.1  --expiration 10 --apr 5 --runInLoop
 ```
 
 
@@ -70,7 +70,7 @@ After [installing locally](## Install):
 zip -r offer-bot.zip .
 ```
 
-### Install to AWS Lambda
+### Deploy to AWS Lambda
 
 - In Lambda Functions, create function
 - On the Create function page:
@@ -133,7 +133,7 @@ REPORT RequestId: a3bb92e9-c622-4e01-a107-b478e3553ade	Duration: 9040.03 ms	Bill
 ```
 
 
-#### To Set up automatic triggers
+### To Set up automatic triggers
 
 - Search `Cloudwatch` in the search bar and click on the top result
 - Click on `Event` option on the left menu bar
@@ -162,3 +162,4 @@ REPORT RequestId: a3bb92e9-c622-4e01-a107-b478e3553ade	Duration: 9040.03 ms	Bill
 - Type a name (eg: my-offer-bot-1min) for the rule and click on `Create rule` button
 - Go back to your newly created lambda function, goto `Monitor` tab --> `Logs` and check the logs.
 ![add env var](./img/8.png)
+- To close the bot, just disable or delete the created rule from CloudWatch.
