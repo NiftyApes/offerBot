@@ -144,7 +144,20 @@ REPORT RequestId: a3bb92e9-c622-4e01-a107-b478e3553ade	Duration: 9040.03 ms	Bill
 - Under Event Source, choose `Schedule`
 - Set timer as fixed rate of 1 minutes
 - On the right, set target as you newly created lambda function. `my-offer-bot`
-- Click on `Configure Details`
+- Click on `Configure Input`, select `Constant (Json Text)` and paste the params json (your offer params) in the input:
+```json
+{
+  "nftContractAddress": "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d",
+  "chainId": "0x5",
+  "duration": 2,
+  "floorOfferLimit": 3,
+  "ltv": 0.1,
+  "maxOfferValue": 0.1,
+  "expiration": 1,
+  "apr": 2
+}
+```
+- Now, Click on `Configure Details` button
 ![add env var](./img/7.png)
 - Type a name (eg: my-offer-bot-1min) for the rule and click on `Create rule` button
 - Go back to your newly created lambda function, goto `Monitor` tab --> `Logs` and check the logs.
