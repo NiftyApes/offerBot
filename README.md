@@ -7,7 +7,7 @@ Windows: https://github.com/coreybutler/nvm-windows
 Linux/MacOS: https://github.com/nvm-sh/nvm
 
 Supported Node versions due OS are v16.13.*
-### Bidding Bot
+### Offer Bot
 After node is installed, run `npm install --global yarn`
 To then install the bot, run `yarn install`
 ## Configuration

@@ -43,26 +43,31 @@ const yargs = Yargs(hideBin(process.argv))
         type: 'string',
         demandOption: true,
         requiresArg: true,
-        description: 'APR in percent'
+        description: 'APR in percentage'
     })
     .option('duration', {
         type: 'string',
         demandOption: true,
         requiresArg: true,
-        description: 'Duration in days'
+        description: 'Duration in number of days'
     })
-    .option('offerLimit', {
+    .option('floorOfferLimit', {
         type: 'string',
         demandOption: false,
-        requiresArg: true,
         default: '1',
-        description: 'Max number of Nfts for offer limit'
+        description: 'Max number of Nfts for floor offer limit'
     })
-    .option('updateDelay', {
+    .option('expiration', {
         type: 'string',
         demandOption: true,
         requiresArg: true,
-        description: 'Delay in mins for offer update'
+        description: 'Offer expiration time in minutes'
+    })
+    .option('runInLoop', {
+        type: 'boolean',
+        requiresArg: false,
+        default: false,
+        description: 'Continuously creates offer at end of expiry'
     })
     .option('dryRun', {
         type: 'boolean',
@@ -115,14 +120,17 @@ if (yargs.argv.dryRun) {
     process.exit();
 }
 
-const delayInMinutes = parseFloat(yargs.argv.updateDelay);
-while (true) {
-    if ((Date.now() - cData['startTime']) >= delayInMinutes * 60 * 1000) {
+const expirationInMinutes = parseFloat(yargs.argv.expiration);
+let runOnce = true;
+while (yargs.argv.runInLoop || runOnce) {
+    runOnce = false;
+    if ((Date.now() - cData['startTime']) >= expirationInMinutes * 60 * 1000) {
         const collectionStats = await getRaribleCollectionStats(nftContractAddress);
 
         const offerValue = (collectionStats.floorPrice * ltv / 100).toFixed(18);
+        console.log(offerValue, collectionStats);
         if (offerValue <= parseFloat(yargs.argv.maxOfferValue)) {
-            const offerArgs = [chainId, signer, nftContractAddress, offerValue, parseFloat(yargs.argv.apr), parseInt(yargs.argv.duration), parseInt(yargs.argv.offerLimit), delayInMinutes];
+            const offerArgs = [chainId, signer, nftContractAddress, offerValue, parseFloat(yargs.argv.apr), parseInt(yargs.argv.duration), parseInt(yargs.argv.floorOfferLimit), expirationInMinutes];
             await createOffer(...offerArgs);
             console.log(new Date(), "New Offer Created.", {offerValue: offerValue});
         } else {

@@ -7,7 +7,7 @@ const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 export const createOffer = async function (chainId, signer, nftContractAddress, amount, aprInPercent, durationInDays, offerLimit, expirationInHours) {
   const address = signer.address;
 
-  const offersContractAddress = ethers.utils.getAddress('0x80f4b2e89865183a6455295e9fa1042753b14b0a');
+  const offersContractAddress = ethers.utils.getAddress('0x896A60e3f3457a3587F2ce30D812ffeDb7547EC7');
 
   const SECONDS_IN_YEAR = 3.154e7
 
