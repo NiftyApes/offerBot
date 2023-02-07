@@ -1,0 +1,28 @@
+{
+  "name": "niftyapescontracts",
+  "author": "zishan sami",
+  "version": "1.0.0",
+  "description": "Automated bot for NiftyApes Offer management",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com:NiftyApes/offerBot.git"
+  },
+  "main": "index.js",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": "v16.17.*"
+  },
+  "dependencies": {
+    "@truffle/hdwallet-provider": "2.0.14",
+    "async-sema": "3.1.1",
+    "dotenv": "16.0.1",
+    "ethers": "5.7.0",
+    "node-fetch": "^3.3.0",
+    "yargs": "17.5.1"
+  }
+}
