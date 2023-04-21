@@ -1,100 +1,98 @@
-import { ethers } from 'ethers';
-import { saveSignatureOfferInDb } from '../api/saveSignatureOfferInDb.js';
-import { OFFERS } from '../api/contractAddresses.js';
+import { parseEther } from 'ethers/lib/utils.js';
+import { sellerFinancing } from '../helpers/contracts.js';
 
 
-const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
+export const createSignedOffer = async function (
+  chainId,
+  signer,
+  creator,
+  nftContractAddress,
+  nftId,
+  price,
+  downPaymentAmount,
+  numPaymentPeriods,
+  periodDuration,
+  periodInterestRateBps,
+  expiration,
+  collectionOfferLimit
+) {
+  const offerStruct = createOfferStruct(
+    creator,
+    nftContractAddress,
+    nftId,
+    price,
+    downPaymentAmount,
+    numPaymentPeriods,
+    periodDuration,
+    periodInterestRateBps,
+    expiration,
+    collectionOfferLimit
+  );
 
-export const createOffer = async function (chainId, signer, nftContractAddress, amount, aprInPercent, durationInDays, offerLimit, expirationInHours) {
-  const address = signer.address;
+  const signature = await signOfferStruct(chainId, signer, offerStruct);
+  return {offer: offerStruct, signature};
+};
 
-  const offersContractAddress = ethers.utils.getAddress(OFFERS[chainId]);
 
-  const SECONDS_IN_YEAR = 3.154e7
+export const createOfferStruct = function (
+  creator,
+  nftContractAddress,
+  nftId,
+  price,
+  downPaymentAmount,
+  numPaymentPeriods,
+  periodDuration,
+  periodInterestRateBps,
+  expiration,
+  collectionOfferLimit
+) {
+  // Calculate amounts in wei
+  price = parseEther(String(price));
+  downPaymentAmount = parseEther(String(downPaymentAmount));
+  const minimumPrincipalPerPeriod = (price.sub(downPaymentAmount)).div(numPaymentPeriods);
 
-  if (!address) {
-    throw new Error('Address is not defined');
+  return {
+    price,
+    downPaymentAmount,
+    minimumPrincipalPerPeriod,
+    nftId,
+    nftContractAddress,
+    creator,
+    periodInterestRateBps,
+    periodDuration,
+    expiration,
+    collectionOfferLimit
   }
+}
 
-  if (!chainId) {
-    throw Error('No chain id');
-  }
-
-  const offerAttempt = {
-    creator: address,
-    duration: Math.floor(durationInDays * 86400),
-    expiration: Math.floor(
-      Date.now() / 1000 + expirationInHours * 60,
-    ),
-    fixedTerms: false,
-    floorTerm: true,
-    lenderOffer: true,
-    nftContractAddress: nftContractAddress,
-    nftId: 0,
-    asset: ETH_ADDRESS,
-    amount: ethers.utils.parseUnits(String(amount), 'ether'),
-    interestRatePerSecond: Math.round(
-      ((aprInPercent / 100) * (amount * 1e18)) / SECONDS_IN_YEAR,
-    ),
-    floorTermLimit: offerLimit,
-  };
+export const signOfferStruct = async function (
+  chainId,
+  signer,
+  offerStruct
+) {
 
   const domain = {
-    name: 'NiftyApes_Offers',
+    name: 'NiftyApes_SellerFinancing',
     version: '0.0.1',
-    chainId,
-    verifyingContract: offersContractAddress,
+    chainId: chainId,
+    verifyingContract: (sellerFinancing(chainId)).address
   };
 
   const types = {
     Offer: [
-      { name: 'creator', type: 'address' },
-      { name: 'duration', type: 'uint32' },
-      { name: 'expiration', type: 'uint32' },
-      { name: 'fixedTerms', type: 'bool' },
-      { name: 'floorTerm', type: 'bool' },
-      { name: 'lenderOffer', type: 'bool' },
-      { name: 'nftContractAddress', type: 'address' },
+      { name: 'price', type: 'uint128' },
+      { name: 'downPaymentAmount', type: 'uint128' },
+      { name: 'minimumPrincipalPerPeriod', type: 'uint128' },
       { name: 'nftId', type: 'uint256' },
-      { name: 'asset', type: 'address' },
-      { name: 'amount', type: 'uint128' },
-      { name: 'interestRatePerSecond', type: 'uint96' },
-      { name: 'floorTermLimit', type: 'uint64' },
-    ],
+      { name: 'nftContractAddress', type: 'address' },
+      { name: 'creator', type: 'address' },
+      { name: 'periodInterestRateBps', type: 'uint32' },
+      { name: 'periodDuration', type: 'uint32' },
+      { name: 'expiration', type: 'uint32' },
+      { name: 'collectionOfferLimit', type: 'uint64' }
+    ]
   };
-
-  const values = offerAttempt;
-
-  let result = await signer._signTypedData(domain, types, values);
-
-  // Ledger was ending signatures with '00' or '01' for some reason
-  // So below we're replacing those with '1b' and '1c' respectively
-  // In order to avoid ECDSA error
-
-  if (result.slice(-2) === '00') {
-    result = result.slice(0, -2) + '1b';
-  }
-
-  if (result.slice(-2) === '01') {
-    result = result.slice(0, -2) + '1c';
-  }
-
-  console.log(new Date(), "requesting NiftyApes API to save the created offer...");
-  await saveSignatureOfferInDb(
-    chainId,
-    offerAttempt.nftContractAddress,
-    offerAttempt.nftId,
-    offerAttempt.creator,
-    {
-      ...offerAttempt,
-      amount: offerAttempt.amount.toString(),
-    },
-    ethers.utils._TypedDataEncoder.hashStruct(
-      'Offer',
-      types,
-      values,
-    ),
-    result,
-  );
-  console.log(new Date(), "save offer request completed.");
+  const signature = await signer._signTypedData(domain, types, offerStruct);
+  console.log((sellerFinancing(chainId)).address);
+  return signature;
 };

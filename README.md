@@ -11,7 +11,7 @@ Supported Node versions due OS are v16.13.*
 After node is installed, run `npm install --global yarn`
 To then install the bot, run `yarn install`
 ## Configuration
-Copy **.env.dist** and add missing values
+Copy **.env.dist** and create new `.env` fle, and missing values
 
 ### Mandatory
 

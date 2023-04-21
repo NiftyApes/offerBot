@@ -15,11 +15,14 @@
     "start": "node index.js"
   },
   "dependencies": {
+    "@reservoir0x/reservoir-sdk": "^0.9.1",
     "@truffle/hdwallet-provider": "2.0.14",
     "async-sema": "3.1.1",
     "dotenv": "16.0.1",
     "ethers": "5.7.0",
     "node-fetch": "^3.3.0",
+    "query-string": "^8.1.0",
+    "wagmi": "^0.12.10",
     "yargs": "17.5.1"
   }
 }

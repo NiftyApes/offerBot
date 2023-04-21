@@ -10,9 +10,7 @@ export function getApiUrl(chainId, path) {
       ? 'GNOSIS'
       : '';
 
-  const apiBaseUri =
-    process.env.API_BASE_URI ||
-    `https://qqxeqsrt39.execute-api.us-west-2.amazonaws.com/${chainName}/`;
+  const apiBaseUri = `https://api.niftyapes.money/${chainName}/`;
 
-  return `${apiBaseUri}v2/${path}`;
+  return `${apiBaseUri}v1/${path}`;
 }
