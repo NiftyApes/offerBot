@@ -7,7 +7,7 @@ import { ethers } from "ethers";
 
 env.config();
 
-const chainId = "0x5";
+const chainId = '0x5';
 const nftContractAddress = "0xe08319d9D09d098D06194ce6420754bB80640E16";
 const nftId = 11;
 const nftListPrice = 0.11;
@@ -18,10 +18,10 @@ const periodDuration = 61;
 const provider = new ethers.providers.JsonRpcProvider(process.env.PROVIDER_URL);
 const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
-await createListing(nftContractAddress, nftId, nftListPrice, signer, 'reservoir');
+await createListing(chainId, nftContractAddress, nftId, nftListPrice, signer, 'reservoir');
 console.log("NFT Listed for sale on reservoir.");
 
-const allExistingListing = await getAllListing(nftContractAddress, nftId);
+const allExistingListing = await getAllListing(chainId, nftContractAddress, nftId);
 if (allExistingListing.length < 1) {
     console.log("No Listing found.", allExistingListing);
     process.exit();
@@ -51,7 +51,7 @@ await sendFundsToUser(signer, maker(chainId).address, offer.price);
 await acceptOffer(offer, signature, encodedSeaportData, signer);
 
 // createReservoirPurchaseOffer
-await createPurchaseOffer(nftContractAddress, nftId, nftListPrice, wethToken, signer);
+await createPurchaseOffer(chainId, nftContractAddress, nftId, nftListPrice, wethToken, signer);
 
 // wait for loan to expire
 wait(offer.periodDuration); 

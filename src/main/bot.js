@@ -68,9 +68,9 @@ export const bot = async function (input) {
             for (let i = 0; i < allMakerLoans.length; i++) {
                 const loan = allMakerLoans[i];
                 if (loan.loan.periodEndTimestamp <= blockTimestamp) {
-                    printLog("Expired: ", loan.offer.offer.nftContractAddress, loan.offer.offer.nftId);
+                    printLog("Expired: ", "0xe08319d9D09d098D06194ce6420754bB80640E16", 11);
 
-                    const topBid = await getTopWethOffer("0xe08319d9D09d098D06194ce6420754bB80640E16", 11);
+                    const topBid = await getTopWethOffer(chainId, "0xe08319d9D09d098D06194ce6420754bB80640E16", 11);
                     if(topBid) {
                         validTopBids.push({
                             nftContractAddress: "0xe08319d9D09d098D06194ce6420754bB80640E16",
@@ -79,7 +79,7 @@ export const bot = async function (input) {
                         });
                     }    
                 } else {
-                    printLog("Active: ", loan.offer.offer.nftContractAddress, loan.offer.offer.nftId);
+                    printLog("Active: ", "0xe08319d9D09d098D06194ce6420754bB80640E16", 11);
                 }
             }   
 
