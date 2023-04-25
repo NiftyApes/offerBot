@@ -22,7 +22,6 @@
     "ethers": "5.7.0",
     "node-fetch": "^3.3.0",
     "query-string": "^8.1.0",
-    "wagmi": "^0.12.10",
     "yargs": "17.5.1"
   }
 }
