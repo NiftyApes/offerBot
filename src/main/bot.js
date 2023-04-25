@@ -5,7 +5,7 @@ import * as fs from "fs";
 import {Wallet, providers} from "ethers";
 import fetch from 'node-fetch'
 import { getActiveSellerLoans } from './getActiveSellerLoans.js';
-import {getTopWethOffer} from './reservoir.js';
+import { getTopWethOffer, encodeRawSeaportOrderData } from './seaport.js';
 import { seizeAndSell } from './seizeAndSell.js';
 
 globalThis.fetch = fetch
@@ -52,7 +52,7 @@ export const bot = async function (input) {
     const provider = new providers.JsonRpcProvider(process.env.PROVIDER_URL);
     const signer = new Wallet(process.env.PRIVATE_KEY, provider);
     const blockTimestamp = (await provider.getBlock("latest")).timestamp;
-    console.log(blockTimestamp);
+
     let runOnce = true;
     while (input['runInLoop'] || runOnce) {
         runOnce = false;
@@ -60,34 +60,35 @@ export const bot = async function (input) {
 
             // fetch all the maker loans which are active
             const allMakerLoans = await getActiveSellerLoans(makerAddress, chainId);
-
+            printLog(allMakerLoans);
+            
             // create a list of top offers (if exists) for all nfts in expired loans
-
-            console.log("All loans:")
+            printLog("All loans:")
             let validTopBids = [];
             for (let i = 0; i < allMakerLoans.length; i++) {
                 const loan = allMakerLoans[i];
                 if (loan.loan.periodEndTimestamp <= blockTimestamp) {
-                    console.log("Expired: ", loan.offer.offer.nftContractAddress, loan.offer.offer.nftId);
+                    printLog("Expired: ", loan.offer.offer.nftContractAddress, loan.offer.offer.nftId);
 
-                    const topBid = await getTopWethOffer(loan.offer.offer.nftContractAddress, loan.offer.offer.nftId);
+                    const topBid = await getTopWethOffer("0xe08319d9D09d098D06194ce6420754bB80640E16", 11);
                     if(topBid) {
                         validTopBids.push({
-                            nftContractAddress: loan.offer.offer.nftContractAddress,
-                            nftId: loan.offer.offer.nftId,
-                            topBid: topBid
+                            nftContractAddress: "0xe08319d9D09d098D06194ce6420754bB80640E16",
+                            nftId: 11,
+                            encodedTopBid: encodeRawSeaportOrderData(topBid.rawData)
                         });
                     }    
                 } else {
-                    console.log("Active: ", loan.offer.offer.nftContractAddress, loan.offer.offer.nftId);
+                    printLog("Active: ", loan.offer.offer.nftContractAddress, loan.offer.offer.nftId);
                 }
             }   
 
             // execute seize and sell for the nfts for which the offer exists
-            console.log("Valid top bids:");
+            printLog("Valid top bids:");
             for (let i = 0; i < validTopBids.length; i++) {
-                console.log(validTopBids[i]);
-                await seizeAndSell(chainId, validTopBids[i].nftContractAddress, validTopBids[i].nftId, validTopBids[i].topBid);
+                printLog("Calling seizeAndSell for:");
+                printLog(validTopBids[i]);
+                await seizeAndSell(chainId, validTopBids[i].nftContractAddress, validTopBids[i].nftId, validTopBids[i].encodedTopBid, signer);
             }
 
             if (input['runInLoop']) {
