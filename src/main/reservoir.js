@@ -211,3 +211,26 @@ export const encodeRawSeaportOrderData = function (rawData) {
   );
   return offerDataEncoded;
 }
+
+export const getNftAskPrice = async function (
+  chainId,
+  nftContractAddress,
+  nftId
+) {
+  const options = {
+    method: 'GET',
+    headers: {accept: '*/*', 'x-api-key': process.env.RESERVOIR_API_KEY}
+  };
+  
+  const response = await fetch(`${RESERVOIR_API_BASE_URL[chainId]}/tokens/v6?tokens=${nftContractAddress}%3A${nftId}`, options)
+  const data = await response.json();
+  if (data.success === false || data.statusCode === 400) {
+    console.log(data);
+    process.exit();
+  }
+  if (data.tokens && data.tokens.length>0 ) {
+    const price = data.tokens[0].market.floorAsk.price.amount.raw;
+    const askOrderId = data.tokens[0].market.floorAsk.id;
+    return {price, askOrderId};
+  }
+}

@@ -1,7 +1,7 @@
 import env from 'dotenv';
 import { bot } from '../src/main/bot.js';
-import { createSignedOffer } from '../src/main/createOffer.js';
-import { createListing, createPurchaseOffer, getAllListing, encodeRawSeaportOrderData } from '../src/main/seaport.js';
+import { createSignedOffer } from '../src/main/offers.js';
+import { createListing, createPurchaseOffer, getAllListing, encodeRawSeaportOrderData } from '../src/main/reservoir.js';
 import { maker, seaportExecuter } from '../src/helpers/contracts.js';
 import { ethers } from "ethers";
 

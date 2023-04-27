@@ -5,6 +5,8 @@ export const sellerFinancing = (chainId) => {
   const sellerFinancingContract =
     chainId === '0x5'
       ? '0xf5Fa79D20d942a5210bF0FE9f5110102B8ECE955'
+      : chainId === '0x1'
+      ? '0x216A0b1Ee6D72A11F50450ed4d1BDe62170F6337'
       : '';
 
     return {
@@ -16,6 +18,8 @@ export const sellerFinancing = (chainId) => {
 export const maker = (chainId) => {
   const makerContractAddress =
     chainId === '0x5'
+      ? '0x216A0b1Ee6D72A11F50450ed4d1BDe62170F6337'
+      : chainId === '0x1'
       ? '0x216A0b1Ee6D72A11F50450ed4d1BDe62170F6337'
       : '';
 

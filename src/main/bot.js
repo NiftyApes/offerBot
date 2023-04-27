@@ -3,9 +3,9 @@ import ethers from 'ethers';
 import {createHash} from "crypto";
 import * as fs from "fs";
 import {Wallet, providers} from "ethers";
-import fetch from 'node-fetch'
+import fetch from 'node-fetch';
 import { getActiveSellerLoans } from './getActiveSellerLoans.js';
-import { getTopWethOffer, encodeRawSeaportOrderData } from './seaport.js';
+import { getTopWethOffer, encodeRawSeaportOrderData } from './reservoir.js';
 import { seizeAndSell } from './seizeAndSell.js';
 
 globalThis.fetch = fetch
