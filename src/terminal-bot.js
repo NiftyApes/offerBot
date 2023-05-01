@@ -4,13 +4,6 @@ import {bot} from './main/bot.js';
 
 const yargs = Yargs(hideBin(process.argv))
     .command('seize-and-sell')
-    .option('makerAddress', {
-        alias: 'maker',
-        type: 'string',
-        demandOption: true,
-        requireArg: true,
-        description: 'Address of the maker contract'
-    })
     .option('chainId', {
         type: 'string',
         demandOption: true,

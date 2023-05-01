@@ -34,7 +34,7 @@ export const createOffer = async function (input) {
     let response = {statusCode: 400};
     if (nftData) {
         let currentMarketPrice = nftData.price;
-        let askOrderId = nftData.askOrderId;
+        let listingOrderId = nftData.listingOrderId;
         const downPaymentAmount = (process.env.DOWN_PAYMENT_PERCENTAGE/100) * currentMarketPrice;
 
         const offerStruct = createOfferStruct(
@@ -54,13 +54,13 @@ export const createOffer = async function (input) {
             response = {
                 statusCode: 200,
                 offer: [offerStruct],
-                askOrderId
+                listingOrderId
             };
         } else {
             response = {
                 statusCode: 200,
                 offer: [offerStruct],
-                askOrderId,
+                listingOrderId,
                 signature: [await signOfferStruct(chainId, signer, offerStruct)]
             }
         }

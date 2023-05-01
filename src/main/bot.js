@@ -7,6 +7,7 @@ import fetch from 'node-fetch';
 import { getActiveSellerLoans } from './getActiveSellerLoans.js';
 import { getTopWethOffer, encodeRawSeaportOrderData } from './reservoir.js';
 import { seizeAndSell } from './seizeAndSell.js';
+import { maker } from '../helpers/contracts.js';
 
 globalThis.fetch = fetch
 env.config();
@@ -16,14 +17,6 @@ export const printLog = function (messageString) {
 }
 
 export const bot = async function (input) {
-
-    let makerAddress = input['makerAddress'];
-
-    try {
-        makerAddress = ethers.utils.getAddress(makerAddress);
-    } catch (e) {
-        throw {message: 'Invalid maker address', address: makerAddress};
-    }
 
     const chainId = input['chainId'];
     const allowedChainIds = ['0x5', '0x1', '0x64', '0x137', '0x80001'];
@@ -39,7 +32,7 @@ export const bot = async function (input) {
         triggerDelayInMins = parseFloat(input['triggerDelay']);
     }
 
-    const cacheHash = createHash('sha256').update(makerAddress+chainId).digest('hex');
+    const cacheHash = createHash('sha256').update(maker(chainId).address+chainId).digest('hex');
     const cacheFileName = '/tmp/'+cacheHash+'.json';
     const existsFile = fs.existsSync(cacheFileName);
 
@@ -59,7 +52,7 @@ export const bot = async function (input) {
         if (!input['runInLoop'] || (Date.now() - cache['startTime']) >= triggerDelayInMins * 60 * 1000) {
 
             // fetch all the maker loans which are active
-            const allMakerLoans = await getActiveSellerLoans(makerAddress, chainId);
+            const allMakerLoans = await getActiveSellerLoans(maker(chainId).address, chainId);
             printLog(allMakerLoans);
             
             // create a list of top offers (if exists) for all nfts in expired loans
@@ -84,7 +77,6 @@ export const bot = async function (input) {
             }   
 
             // execute seize and sell for the nfts for which the offer exists
-            printLog("Valid top bids:");
             for (let i = 0; i < validTopBids.length; i++) {
                 printLog("Calling seizeAndSell for:");
                 printLog(validTopBids[i]);

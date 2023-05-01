@@ -230,7 +230,7 @@ export const getNftAskPrice = async function (
   }
   if (data.tokens && data.tokens.length>0 ) {
     const price = data.tokens[0].market.floorAsk.price.amount.raw;
-    const askOrderId = data.tokens[0].market.floorAsk.id;
-    return {price, askOrderId};
+    const listingOrderId = data.tokens[0].market.floorAsk.id;
+    return {price, listingOrderId};
   }
 }
